@@ -1,0 +1,4 @@
+#Ignorar ejecutables
+*.exe
+*.out
+proyecto
