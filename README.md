@@ -1,19 +1,28 @@
 # Proyecto Semestral: Métricas de Centralidad en Redes
 
 **Universidad de Concepción**
+
 **Facultad de Ingeniería - Ingeniería Civil Informática**
-[cite_start]**Asignatura:** Estructura de Datos (S1-2026) [cite: 2, 3, 4]
-[cite_start]**Docente:** José Sebastián Fuentes Sepúlveda [cite: 5]
-[cite_start]**Grupo:** 15 [cite: 6]
+
+**Asignatura:** Estructura de Datos (S1-2026) 
+
+**Docente:** José Sebastián Fuentes Sepúlveda 
+
+**Grupo:** 15 
 
 **Integrantes:**
-* [cite_start]Felipe Alejandro Tilleria Morales [cite: 8]
-* [cite_start]Jhostian Matías San Martín Morales [cite: 8]
-* [cite_start]Matías Ignacio Catril Pérez [cite: 9]
-**Compilación y Ejecución**
+* Felipe Alejandro Tilleria Morales 
+* Jhostian Matías San Martín Morales 
+* Matías Ignacio Catril Pérez
+
+**Compilación y Ejecución:**
+
   g++ src/main.cpp src/Grafo.cpp src/Loader.cpp -I include -o proyecto_redes -std=c++11
+  
   En Linux/macOS: ./proyecto_redes
+  
   En Windows: proyecto_redes.exe
+  
 ---
 
 ## Descripción del Proyecto
@@ -30,11 +39,17 @@ El TDA está diseñado de manera genérica, soportando grafos dirigidos, no diri
 
 ## Checklist de Métricas implementadas //poner descripción
 
-[ ] Degree Centrality:
-[ ] Betweenness Centrality:
-[ ] Closeness Centrality:
-[ ] PageRank:
-[ ] Average Shortest Path:
+- [ ] Degree Centrality:
 
-[ ] Eccentricity:
-[ ] Radiality Centrality:
+- [ ] Betweenness Centrality:
+
+- [ ] Closeness Centrality:
+
+- [ ] PageRank:
+
+- [ ] Average Shortest Path:
+
+
+- [ ] Eccentricity:
+
+- [ ] Radiality Centrality:
