@@ -16,8 +16,41 @@ int main() {
     loader_imdb.cargar_csv("data/imdb_edgelist.csv", grafo_imdb, ',', false, false, false);
     auto mapa_imdb = loader_imdb.get_mapa_nombres();
     grafo_imdb.imprimir_muestra_nodos(mapa_imdb);
+    /*
     // betweenness centrality con 5000 nodos para aproximar  
     Metricas::print_betweenness(grafo_imdb, mapa_imdb, 5, 5000);
+    */
+
+    // -------------------------------------------------------------
+    // NUEVO: Test de Excentricidad para el nodo más conectado (Hub)
+    // -------------------------------------------------------------
+    if (!grafo_imdb.get_nodos().empty()) {
+        int id_hub = -1;
+        size_t max_conexiones = 0;
+        
+        // 1. Buscar iterativamente el nodo con mayor grado de salida
+        for (const auto& par : grafo_imdb.get_lista_adyacencia()) {
+            if (par.second.size() > max_conexiones) {
+                max_conexiones = par.second.size();
+                id_hub = par.first;
+            }
+        }
+
+        // 2. Extraer su nombre real desde el Loader
+        string nombre_actor = "Desconocido";
+        if (mapa_imdb.find(id_hub) != mapa_imdb.end()) {
+            nombre_actor = mapa_imdb[id_hub];
+        }
+        
+        // 3. Calcular su Excentricidad
+        double exc_imdb = Metricas::excentricidad(grafo_imdb, id_hub, false);
+        
+        cout << "-> El Hub principal de IMDb es [" << id_hub << "] (" << nombre_actor << ") con " 
+             << max_conexiones << " conexiones.\n";
+        cout << "-> La Excentricidad del Hub es: " << exc_imdb << "\n";
+    }
+    // -------------------------------------------------------------
+
 
     cout << "\n=== Test 2: Red Kraggle (Dirigido y Ponderado) ===\n";
     
@@ -28,8 +61,37 @@ int main() {
     loader_kraggle.cargar_csv("data/edges.csv", grafo_kraggle, ',', true, true, true);
     auto mapa_kraggle = loader_kraggle.get_mapa_nombres();
     grafo_kraggle.imprimir_muestra_nodos(mapa_kraggle);
-    // betweenness centrality con 5000 nodos para aproximar
+    /*    // betweenness centrality con 5000 nodos para aproximar
     Metricas::print_betweenness(grafo_kraggle, mapa_kraggle, 5, 5000);
+    */
+    // -------------------------------------------------------------
+    // NUEVO: Test de Excentricidad para el nodo más conectado (Hub)
+    // -------------------------------------------------------------
+    if (!grafo_kraggle.get_nodos().empty()) {
+        int id_hub = -1;
+        size_t max_conexiones = 0;
+        
+        // 1. Buscar iterativamente el nodo con mayor grado de salida
+        for (const auto& par : grafo_kraggle.get_lista_adyacencia()) {
+            if (par.second.size() > max_conexiones) {
+                max_conexiones = par.second.size();
+                id_hub = par.first;
+            }
+        }
 
+        // 2. Extraer su nombre real desde el Loader
+        string nombre_actor = "Desconocido";
+        if (mapa_kraggle.find(id_hub) != mapa_kraggle.end()) {
+            nombre_actor = mapa_kraggle[id_hub];
+        }
+        
+        // 3. Calcular su Excentricidad
+        double exc_kraggle = Metricas::excentricidad(grafo_kraggle, id_hub, true);
+        
+        cout << "-> El Hub principal de Kraggle es [" << id_hub << "] (" << nombre_actor << ") con " 
+             << max_conexiones << " conexiones.\n";
+        cout << "-> La Excentricidad del Hub es: " << exc_kraggle << "\n";
+    }
+    // -------------------------------------------------------------
     return 0;
 }

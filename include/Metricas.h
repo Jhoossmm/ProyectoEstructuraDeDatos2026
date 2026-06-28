@@ -17,6 +17,9 @@ public:
 
     // imprime el top k de nodos por betweenness
     static void print_betweenness(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k = 5, int k_origenes = -1);
+
+    //Calcula la excentricidad de un vertice especifico
+    static double excentricidad(const Grafo& grafo, int origen, bool es_ponderado);
 };
 
 #endif

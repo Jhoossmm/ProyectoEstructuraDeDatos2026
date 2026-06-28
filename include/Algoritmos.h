@@ -12,6 +12,7 @@ struct BrandesBusqueda {
     vector<vector<int>> pred;
     vector<double> sigma;
     vector<int> orden;
+    vector<double> dist;
 };
 
 class Algoritmos {

@@ -57,6 +57,7 @@ BrandesBusqueda Algoritmos::brandes_bfs(
         }
     }
 
+    res.dist = dist;  //Guardamos las distancias calculadas para su uso posterior
     return res;
 }
 
@@ -122,5 +123,6 @@ BrandesBusqueda Algoritmos::brandes_dijkstra(
         }
     }
 
+    res.dist = dist;
     return res;
 }
