@@ -20,6 +20,12 @@ public:
 
     //Calcula la excentricidad de un vertice especifico
     static double excentricidad(const Grafo& grafo, int origen, bool es_ponderado);
+
+    // Calcula el Diámetro (la mayor excentricidad de todo el grafo)
+    static double diametro(const Grafo& grafo, bool es_ponderado);
+    
+    //Calcula la Radiality Centrality
+    static double radiality_centrality(const Grafo& grafo, int origen, bool es_ponderado, double diametro_grafo = -1.0);
 };
 
 #endif

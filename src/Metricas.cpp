@@ -165,3 +165,50 @@ double Metricas::excentricidad(const Grafo& grafo, int origen, bool es_ponderado
 
     return max_distancia;
 }
+
+double Metricas::radiality_centrality(const Grafo& grafo, int origen, bool es_ponderado, double diametro_grafo) {
+    const auto& ady = grafo.get_lista_adyacencia();
+    vector<int> nodos = grafo.get_nodos();
+
+    if (nodos.size() <= 1) return 0.0;
+
+    //Crear mapa de índices
+    unordered_map<int, int> idx;
+    for (int i = 0; i < static_cast<int>(nodos.size()); ++i) {
+        idx[nodos[i]] = i;
+    }
+
+    if (idx.find(origen) == idx.end()) {
+        return 0.0; 
+    }
+
+    int s_idx = idx[origen];
+    BrandesBusqueda busqueda;
+
+    //Delegar la búsqueda de caminos mínimos
+    if (es_ponderado) {
+        busqueda = Algoritmos::brandes_dijkstra(ady, nodos, idx, s_idx);
+    } else {
+        busqueda = Algoritmos::brandes_bfs(ady, nodos, idx, s_idx);
+    }
+
+    //Se aplica la formula: Sum( (diametro + 1 - distancia) ) / (V - 1)
+    double suma_radialidad = 0.0;
+    int nodos_alcanzables = 0; //Esto representara el (V - 1)
+    const double inf = numeric_limits<double>::infinity();
+
+    for (double d : busqueda.dist) {
+        //Se ignoran los nodos inalcanzables y la distancia hacia sí mismo (que es 0)
+        if (d != inf && d > 0.0) {
+            suma_radialidad += (diametro_grafo + 1.0 - d);
+            nodos_alcanzables++;
+        }
+    }
+
+    if (nodos_alcanzables == 0) {
+        return 0.0;
+    }
+
+    //Se divide por la cantidad de nodos de su componente conexo
+    return suma_radialidad / static_cast<double>(nodos_alcanzables);
+}
