@@ -28,6 +28,11 @@ public:
     
     //Función de prueba
     void imprimir_muestra_nodos(unordered_map<int, string>& id_a_nombre);
+
+    //getters
+    const unordered_map<int, vector<Arista>>& get_lista_adyacencia() const;
+    vector<int> get_nodos() const;
+    bool get_es_dirigido() const;
 };
 
 #endif
