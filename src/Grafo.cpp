@@ -18,6 +18,26 @@ void Grafo::insertar_arista(int u, int v, double peso, bool es_dirigida) {
     }
 }
 
+//retorna la lista de adyacencia completa del grafo
+const unordered_map<int, vector<Arista>>& Grafo::get_lista_adyacencia() const {
+    return lista_adyacencia;
+}
+
+//retorna un vector con los ids de los nodos presentes en el grfo
+vector<int> Grafo::get_nodos() const {
+    vector<int> nodos;
+    nodos.reserve(lista_adyacencia.size());
+    for (auto const& par : lista_adyacencia) {
+        nodos.push_back(par.first);
+    }
+    return nodos;
+}
+
+//retorna si el grafo es dirigido o no
+bool Grafo::get_es_dirigido() const {
+    return es_dirigido;
+}
+
 //Funcion de prueba para mostrar algunos nodos y su grado de salida
 void Grafo::imprimir_muestra_nodos(unordered_map<int, string>& id_a_nombre) {
     cout << "-> Total de vertices en el grafo: " << lista_adyacencia.size() << "\n";
