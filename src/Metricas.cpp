@@ -132,13 +132,13 @@ double Metricas::excentricidad(const Grafo& grafo, int origen, bool es_ponderado
     const auto& ady = grafo.get_lista_adyacencia();
     vector<int> nodos = grafo.get_nodos();
 
-    // 1. Crear el mapa de índices que exigen los algoritmos optimizados
+    //Crear el mapa de índices para los algoritmos
     unordered_map<int, int> idx;
     for (int i = 0; i < static_cast<int>(nodos.size()); ++i) {
         idx[nodos[i]] = i;
     }
 
-    // Si el nodo origen no existe en el grafo, devolvemos 0
+    //Si el nodo origen no existe en el grafo, devolvemos 0
     if (idx.find(origen) == idx.end()) {
         return 0.0; 
     }
@@ -146,18 +146,17 @@ double Metricas::excentricidad(const Grafo& grafo, int origen, bool es_ponderado
     int s_idx = idx[origen];
     BrandesBusqueda busqueda;
 
-    // 2. Delegar la búsqueda pasándole todos los parámetros
     if (es_ponderado) {
         busqueda = Algoritmos::brandes_dijkstra(ady, nodos, idx, s_idx);
     } else {
         busqueda = Algoritmos::brandes_bfs(ady, nodos, idx, s_idx);
     }
 
-    // 3. Encontrar la máxima distancia (ignorando los inalcanzables)
+    //Encontrar la máxima distancia (ignorando los nodos inalcanzables)
     double max_distancia = 0.0;
     const double inf = numeric_limits<double>::infinity();
 
-    // Iteramos sobre las distancias recién agregadas al struct
+    //Se itera sobre las distancias recién agregadas al struct
     for (double d : busqueda.dist) {
         if (d != inf) {
             max_distancia = max(max_distancia, d);
