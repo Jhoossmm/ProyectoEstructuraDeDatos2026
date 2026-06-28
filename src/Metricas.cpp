@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <limits>
 
 namespace {
 // en caso de que el grafo de pesos tenga pesos unitarios para que use bfs
@@ -211,4 +212,77 @@ double Metricas::radiality_centrality(const Grafo& grafo, int origen, bool es_po
 
     //Se divide por la cantidad de nodos de su componente conexo
     return suma_radialidad / static_cast<double>(nodos_alcanzables);
+}
+
+double Metricas::average_shortest_path(const Grafo& grafo, int k_origenes) {
+    const auto& ady = grafo.get_lista_adyacencia();
+    vector<int> nodos = grafo.get_nodos();
+
+    // si es un arbol unitario no hay caminos :O
+    if (nodos.size() < 2) {
+        return 0.0;
+    }
+
+    // mapa de id real a indice 
+    unordered_map<int, int> idx;
+    idx.reserve(nodos.size());
+    for (int i = 0; i < static_cast<int>(nodos.size()); ++i) {
+        idx[nodos[i]] = i;
+    }
+
+    // usa bfs si todos los pesos son unitarios y dijkstra si no
+    bool tiene_pesos = valid_tiene_peso(ady);
+
+    // si k_origenes es valido lo usa
+    int total_origenes = static_cast<int>(nodos.size());
+    int usados = total_origenes;
+    if (k_origenes > 0 && k_origenes < total_origenes) {
+        usados = k_origenes;
+    }
+
+    const double inf = numeric_limits<double>::infinity();
+    double suma_distancias = 0.0;
+    long long cantidad_pares = 0;
+
+    // recorre cada origen y acumula las distancias a los nodos alcanzables
+    for (int origen = 0; origen < usados; ++origen) {
+        int s_idx = idx[nodos[origen]];
+        BrandesBusqueda busqueda = tiene_pesos
+            ? Algoritmos::brandes_dijkstra(ady, nodos, idx, s_idx)
+            : Algoritmos::brandes_bfs(ady, nodos, idx, s_idx);
+
+        // se excluye la distancia hacia si mismo y los nodos inalcanzablrs
+        for (int w_idx = 0; w_idx < static_cast<int>(busqueda.dist.size()); ++w_idx) {
+            if (w_idx == s_idx) {
+                continue;
+            }
+            double d = busqueda.dist[w_idx];
+            if (d != inf) {
+                suma_distancias += d;
+                ++cantidad_pares;
+            }
+        }
+    }
+
+    if (cantidad_pares == 0) {
+        return 0.0;
+    }
+
+    // promedio final de distancias minimas
+    return suma_distancias / static_cast<double>(cantidad_pares);
+}
+
+void Metricas::print_average_shortest_path(const Grafo& grafo, int k_origenes) {
+    vector<int> nodos = grafo.get_nodos();
+    int total_origenes = static_cast<int>(nodos.size());
+    int usados = total_origenes;
+    if (k_origenes > 0 && k_origenes < total_origenes) {
+        usados = k_origenes;
+    }
+
+    // imprime el valor
+    double asp = average_shortest_path(grafo, k_origenes);
+    cout << "-> average shortest path: " << asp
+         << " (usando " << usados << " origenes"
+         << (usados == total_origenes ? ", exacto).\n" : ", aproximado).\n");
 }

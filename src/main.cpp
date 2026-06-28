@@ -16,10 +16,9 @@ int main() {
     loader_imdb.cargar_csv("data/imdb_edgelist.csv", grafo_imdb, ',', false, false, false);
     auto mapa_imdb = loader_imdb.get_mapa_nombres();
     grafo_imdb.imprimir_muestra_nodos(mapa_imdb);
-    /*
+
     // betweenness centrality con 5000 nodos para aproximar  
-    Metricas::print_betweenness(grafo_imdb, mapa_imdb, 5, 5000);
-    */
+    // Metricas::print_betweenness(grafo_imdb, mapa_imdb, 5, 5000);
 
     // -------------------------------------------------------------
     // Test combinado de Hub, Excentricidad y Radialidad)
@@ -51,6 +50,8 @@ int main() {
         << max_conexiones << " conexiones.\n";
         cout << "-> La Excentricidad del Hub es: " << exc_imdb << "\n";
         cout << "-> La Radiality Centrality del Hub es: " << rad_imdb << "\n";
+        // shortest path promedio con 2000 nodos para aproximar
+        Metricas::print_average_shortest_path(grafo_imdb, 2000);
     }
     // -------------------------------------------------------------
 
@@ -64,9 +65,10 @@ int main() {
     loader_kraggle.cargar_csv("data/edges.csv", grafo_kraggle, ',', true, true, true);
     auto mapa_kraggle = loader_kraggle.get_mapa_nombres();
     grafo_kraggle.imprimir_muestra_nodos(mapa_kraggle);
-    /*    // betweenness centrality con 5000 nodos para aproximar
-    Metricas::print_betweenness(grafo_kraggle, mapa_kraggle, 5, 5000);
-    */
+    
+    // betweenness centrality con 5000 nodos para aproximar
+    // Metricas::print_betweenness(grafo_kraggle, mapa_kraggle, 5, 5000);
+
     // -------------------------------------------------------------
     // Test combinado de Hub, Excentricidad y Radialidad)
     // -------------------------------------------------------------
@@ -97,6 +99,9 @@ int main() {
         << max_conexiones << " conexiones.\n";
         cout << "-> La Excentricidad del Hub es: " << exc_kraggle << "\n";
         cout << "-> La Radiality Centrality del Hub es: " << rad_kraggle << "\n";
+       
+        // shortest path promedio con 2000 nodos para aproximar
+        Metricas::print_average_shortest_path(grafo_kraggle, 2000);
     }
     // -------------------------------------------------------------
     return 0;

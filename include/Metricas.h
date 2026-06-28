@@ -26,6 +26,15 @@ public:
     
     //Calcula la Radiality Centrality
     static double radiality_centrality(const Grafo& grafo, int origen, bool es_ponderado, double diametro_grafo = -1.0);
+
+    // calcula el shortest path promedio entre pares alcanzables
+    // k_origenes = -1 usa todos los nodos como origen
+    // k_origenes > 0 usa solo k origenes para aproximar
+    static double average_shortest_path(const Grafo& grafo, int k_origenes = -1);
+
+    // imprime average shortest path, exacto o aproximado
+    static void print_average_shortest_path(const Grafo& grafo, int k_origenes = -1);
+
 };
 
 #endif
