@@ -50,8 +50,12 @@ int main() {
         << max_conexiones << " conexiones.\n";
         cout << "-> La Excentricidad del Hub es: " << exc_imdb << "\n";
         cout << "-> La Radiality Centrality del Hub es: " << rad_imdb << "\n";
-        // shortest path promedio con 2000 nodos para aproximar
-        Metricas::print_average_shortest_path(grafo_imdb, 2000);
+
+        // // shortest path promedio con 2000 nodos para aproximar
+        // Metricas::print_average_shortest_path(grafo_imdb, 2000);
+
+        // closeness centrality top 5 aproximado con 1000 nodos
+        Metricas::print_closeness(grafo_imdb, mapa_imdb, 5, 1000);
     }
     // -------------------------------------------------------------
 
@@ -100,8 +104,11 @@ int main() {
         cout << "-> La Excentricidad del Hub es: " << exc_kraggle << "\n";
         cout << "-> La Radiality Centrality del Hub es: " << rad_kraggle << "\n";
        
-        // shortest path promedio con 2000 nodos para aproximar
-        Metricas::print_average_shortest_path(grafo_kraggle, 2000);
+        // // shortest path promedio con 2000 nodos para aproximar
+        // Metricas::print_average_shortest_path(grafo_kraggle, 2000);
+    
+        // closeness centrality top 5 aproximado con 1000 nodos
+        Metricas::print_closeness(grafo_kraggle, mapa_kraggle, 5, 1000);
     }
     // -------------------------------------------------------------
     return 0;

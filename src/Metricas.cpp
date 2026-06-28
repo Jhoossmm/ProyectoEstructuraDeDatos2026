@@ -286,3 +286,109 @@ void Metricas::print_average_shortest_path(const Grafo& grafo, int k_origenes) {
          << " (usando " << usados << " origenes"
          << (usados == total_origenes ? ", exacto).\n" : ", aproximado).\n");
 }
+
+unordered_map<int, double> Metricas::closeness_centrality(const Grafo& grafo, int k_origenes) {
+    const auto& ady = grafo.get_lista_adyacencia();
+    vector<int> nodos = grafo.get_nodos();
+
+    // inicializa el closeness los nodos en 0
+    unordered_map<int, double> closeness;
+    closeness.reserve(nodos.size());
+    for (int id : nodos) {
+        closeness[id] = 0.0;
+    }
+
+    // si no hay nodos o solo hay uno no se puede calcular el closeness
+    if (nodos.size() <= 1) {
+        return closeness;
+    }
+
+    // convierte el id real del nodo a un indice 
+    unordered_map<int, int> idx;
+    idx.reserve(nodos.size());
+    for (int i = 0; i < static_cast<int>(nodos.size()); ++i) {
+        idx[nodos[i]] = i;
+    }
+
+    // bfs o dijkstra segun pesos del grafo
+    bool tiene_pesos = valid_tiene_peso(ady);
+    const double inf = numeric_limits<double>::infinity();
+    const double eps = 1e-12;
+    const double n_menos_uno = static_cast<double>(nodos.size() - 1);
+
+    // define cuantos nodos se usan como origen para el calculo
+    int total_origenes = static_cast<int>(nodos.size());
+    int usados = total_origenes;
+    if (k_origenes > 0 && k_origenes < total_origenes) {
+        usados = k_origenes;
+    }
+
+    // calcula las distancias minimas desde cada origen
+    for (int s_idx = 0; s_idx < usados; ++s_idx) {
+        BrandesBusqueda busqueda = tiene_pesos
+            ? Algoritmos::brandes_dijkstra(ady, nodos, idx, s_idx)
+            : Algoritmos::brandes_bfs(ady, nodos, idx, s_idx);
+
+        double suma_distancias = 0.0;
+        int alcanzables = 0;
+
+        // acumula solo nodos alcanzables, menos el propio origen
+        for (int w_idx = 0; w_idx < static_cast<int>(busqueda.dist.size()); ++w_idx) {
+            if (w_idx == s_idx) {
+                continue;
+            }
+            double d = busqueda.dist[w_idx];
+            if (d != inf) {
+                suma_distancias += d;
+                ++alcanzables;
+            }
+        }
+
+        int id_origen = nodos[s_idx];
+        if (alcanzables > 0 && suma_distancias > eps) {
+            // normaliza por si los grafos estan desconectados
+            double fraccion_alcanzable = static_cast<double>(alcanzables) / n_menos_uno;
+            closeness[id_origen] = fraccion_alcanzable * (static_cast<double>(alcanzables) / suma_distancias);
+        }
+    }
+
+    return closeness;
+}
+
+void Metricas::print_closeness(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k, int k_origenes) {
+    // calcula closeness
+    unordered_map<int, double> cc = closeness_centrality(grafo, k_origenes);
+    // prepara vector para ordenar
+    vector<pair<int, double>> pares;
+    pares.reserve(cc.size());
+
+    vector<int> nodos = grafo.get_nodos();
+    int total_origenes = static_cast<int>(nodos.size());
+    int usados = total_origenes;
+    if (k_origenes > 0 && k_origenes < total_origenes) {
+        usados = k_origenes;
+    }
+
+    for (unordered_map<int, double>::const_iterator it = cc.begin(); it != cc.end(); ++it) {
+        pares.push_back(*it);
+    }
+
+    sort(pares.begin(), pares.end(), [](const pair<int, double>& a, const pair<int, double>& b) {
+        return a.second > b.second;
+    });
+
+        int limite = min(k, static_cast<int>(pares.size()));
+        cout << "-> top " << limite << " por closeness"
+            << " (usando " << usados << " origenes"
+            << (usados == total_origenes ? ", exacto):\n" : ", aproximado):\n");
+
+    // imprime los k nodos con mayor closeness
+    for (int i = 0; i < limite; ++i) {
+        int id = pares[i].first;
+        double valor = pares[i].second;
+        unordered_map<int, string>::const_iterator it = id_a_nombre.find(id);
+        string nombre = (it != id_a_nombre.end()) ? it->second : "sin_nombre";
+
+        cout << "   " << (i + 1) << ". ID [" << id << "] (" << nombre << ") -> " << valor << "\n";
+    }
+}

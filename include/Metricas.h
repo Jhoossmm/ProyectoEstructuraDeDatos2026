@@ -35,6 +35,14 @@ public:
     // imprime average shortest path, exacto o aproximado
     static void print_average_shortest_path(const Grafo& grafo, int k_origenes = -1);
 
+    // calcula closeness centrality 
+    // k_origenes = -1 usa todos los nodos como origen
+    // k_origenes > 0 usa solo k nodos para aproximar el resultado
+    static unordered_map<int, double> closeness_centrality(const Grafo& grafo, int k_origenes = -1);
+
+    // imprime el top k de nodos por closeness
+    static void print_closeness(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k = 5, int k_origenes = -1);
+
 };
 
 #endif
