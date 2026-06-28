@@ -8,7 +8,7 @@ void Grafo::insertar_arista(int u, int v, double peso, bool es_dirigida) {
     lista_adyacencia[u].push_back({v, peso});
     
     //Si el grafo no es dirigido, también agregar la conexión inversa
-    if (!es_dirigido) {
+    if (!es_dirigida) {
         lista_adyacencia[v].push_back({u, peso});
     }
     
@@ -33,7 +33,7 @@ vector<int> Grafo::get_nodos() const {
     return nodos;
 }
 
-//retorna si el grafo es dirigido o no
+//retorna si el grafo es dirigido o no  
 bool Grafo::get_es_dirigido() const {
     return es_dirigido;
 }
