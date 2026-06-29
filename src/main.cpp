@@ -20,6 +20,9 @@ int main() {
     // prueba de degree centrality top 5
     Metricas::print_degree(grafo_imdb, mapa_imdb, 5);
 
+    // prueba de pagerank top 5
+    Metricas::print_pagerank(grafo_imdb, mapa_imdb, 5, 0.85, 100, 1e-6);
+
     // betweenness centrality con 5000 nodos para aproximar  
     // Metricas::print_betweenness(grafo_imdb, mapa_imdb, 5, 5000);
 
@@ -75,6 +78,9 @@ int main() {
 
     // prueba de degree centrality top 5
     Metricas::print_degree(grafo_kraggle, mapa_kraggle, 5);
+
+    // prueba de pagerank top 5 
+    Metricas::print_pagerank(grafo_kraggle, mapa_kraggle, 5, 0.85, 100, 1e-6);
     
     // betweenness centrality con 5000 nodos para aproximar
     // Metricas::print_betweenness(grafo_kraggle, mapa_kraggle, 5, 5000);

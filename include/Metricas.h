@@ -15,6 +15,26 @@ public:
     // imprime el top k de nodos por degree centrality
     static void print_degree(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k = 5);
 
+    // calcula pagerank iterativo usando aristas salientes
+    static unordered_map<int, double> pagerank(
+        const Grafo& grafo,
+        double damping = 0.85,
+        int max_iter = 100,
+        double tolerancia = 1e-6,
+        int k_nodos = -1
+    );
+
+    // imprime el top k de nodos por pagerank
+    static void print_pagerank(
+        const Grafo& grafo,
+        const unordered_map<int, string>& id_a_nombre,
+        int k = 5,
+        double damping = 0.85,
+        int max_iter = 100,
+        double tolerancia = 1e-6,
+        int k_nodos = -1
+    );
+
     // calcula betweenness centrality con brandes
     // usa bfs si no hay pesos y dijkstra si hay pesos
     // k_origenes = -1 usa todos los nodos de origen 

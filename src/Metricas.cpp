@@ -60,6 +60,104 @@ unordered_map<int, double> Metricas::degree_centrality(const Grafo& grafo) {
     return centralidad;
 }
 
+unordered_map<int, double> Metricas::pagerank(const Grafo& grafo, double damping, int max_iter, double tolerancia, int k_nodos) {
+    const auto& ady = grafo.get_lista_adyacencia();
+    vector<int> nodos = grafo.get_nodos();
+
+    unordered_map<int, double> rank_final;
+    rank_final.reserve(nodos.size());
+
+    if (nodos.empty()) {
+        return rank_final;
+    }
+
+    // si k_nodos es valido usa solo los primeros k nodos
+    int total_nodos = static_cast<int>(nodos.size());
+    int usados = total_nodos;
+    if (k_nodos > 0 && k_nodos < total_nodos) {
+        usados = k_nodos;
+        nodos.resize(usados);
+    }
+
+    const int n = static_cast<int>(nodos.size());
+    const double inv_n = 1.0 / static_cast<double>(n);
+
+    unordered_map<int, int> idx;
+    idx.reserve(nodos.size());
+    for (int i = 0; i < n; ++i) {
+        idx[nodos[i]] = i;
+    }
+
+    vector<vector<pair<int, double>>> entrantes(n);
+    vector<double> suma_pesos_salientes(n, 0.0);
+
+    // guarda las aristas entrantes y la suma de pesos salientes
+    for (const auto& par : ady) {
+        unordered_map<int, int>::const_iterator it_origen = idx.find(par.first);
+        if (it_origen == idx.end()) {
+            continue;
+        }
+
+        int origen_idx = it_origen->second;
+        for (const Arista& arista : par.second) {
+            unordered_map<int, int>::const_iterator it_destino = idx.find(arista.destino);
+            if (it_destino == idx.end()) {
+                continue;
+            }
+
+            int destino_idx = it_destino->second;
+            double peso = arista.peso > 0.0 ? arista.peso : 1.0;
+            entrantes[destino_idx].push_back(make_pair(origen_idx, peso));
+            suma_pesos_salientes[origen_idx] += peso;
+        }
+    }
+
+    vector<double> rank_actual(n, inv_n);
+    vector<double> rank_nuevo(n, inv_n);
+
+    // repite el calculo hasta converger o llegar al limite de iteraciones
+    for (int iter = 0; iter < max_iter; ++iter) {
+        double masa_colgante = 0.0;
+        for (int i = 0; i < n; ++i) {
+            if (suma_pesos_salientes[i] <= 0.0) {
+                masa_colgante += rank_actual[i];
+            }
+        }
+
+        double base = (1.0 - damping) * inv_n;
+        double redistribucion_colgante = damping * masa_colgante * inv_n;
+        double diferencia_total = 0.0;
+
+        for (int destino_idx = 0; destino_idx < n; ++destino_idx) {
+            double contribucion = 0.0;
+            for (const pair<int, double>& fuente : entrantes[destino_idx]) {
+                int origen_idx = fuente.first;
+                double peso = fuente.second;
+                if (suma_pesos_salientes[origen_idx] > 0.0) {
+                    contribucion += rank_actual[origen_idx] * (peso / suma_pesos_salientes[origen_idx]);
+                }
+            }
+
+            rank_nuevo[destino_idx] = base + redistribucion_colgante + damping * contribucion;
+            diferencia_total += abs(rank_nuevo[destino_idx] - rank_actual[destino_idx]);
+        }
+
+        rank_actual.swap(rank_nuevo);
+        if (diferencia_total < tolerancia) {
+            break;
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        rank_final[nodos[i]] = rank_actual[i];
+    }
+
+    cout << "-> pagerank listo para " << rank_final.size()
+         << " nodos, usando " << usados
+         << (usados == total_nodos ? " nodos del grafo (exacto).\n" : " nodos del grafo (aproximado).\n");
+    return rank_final;
+}
+
 void Metricas::print_degree(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k) {
     unordered_map<int, double> dc = degree_centrality(grafo);
     vector<pair<int, double>> pares;
@@ -75,6 +173,41 @@ void Metricas::print_degree(const Grafo& grafo, const unordered_map<int, string>
 
     int limite = min(k, static_cast<int>(pares.size()));
     cout << "-> top " << limite << " por degree centrality:\n";
+
+    for (int i = 0; i < limite; ++i) {
+        int id = pares[i].first;
+        double valor = pares[i].second;
+        unordered_map<int, string>::const_iterator it = id_a_nombre.find(id);
+        string nombre = (it != id_a_nombre.end()) ? it->second : "sin_nombre";
+
+        cout << "   " << (i + 1) << ". ID [" << id << "] (" << nombre << ") -> " << valor << "\n";
+    }
+}
+
+void Metricas::print_pagerank(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k, double damping, int max_iter, double tolerancia, int k_nodos) {
+    unordered_map<int, double> pr = pagerank(grafo, damping, max_iter, tolerancia, k_nodos);
+    vector<pair<int, double>> pares;
+    pares.reserve(pr.size());
+
+    for (const auto& par : pr) {
+        pares.push_back(par);
+    }
+
+    sort(pares.begin(), pares.end(), [](const pair<int, double>& a, const pair<int, double>& b) {
+        return a.second > b.second;
+    });
+
+    vector<int> nodos = grafo.get_nodos();
+    int total_nodos = static_cast<int>(nodos.size());
+    int usados = total_nodos;
+    if (k_nodos > 0 && k_nodos < total_nodos) {
+        usados = k_nodos;
+    }
+
+    int limite = min(k, static_cast<int>(pares.size()));
+    cout << "-> top " << limite << " por pagerank"
+         << " (usando " << usados << " nodos"
+         << (usados == total_nodos ? ", exacto):\n" : ", aproximado):\n");
 
     for (int i = 0; i < limite; ++i) {
         int id = pares[i].first;
