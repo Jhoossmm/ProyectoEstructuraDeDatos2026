@@ -9,6 +9,12 @@ using namespace std;
 
 class Metricas {
 public:
+    // calcula degree centrality usando vecinos incidentes
+    static unordered_map<int, double> degree_centrality(const Grafo& grafo);
+
+    // imprime el top k de nodos por degree centrality
+    static void print_degree(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k = 5);
+
     // calcula betweenness centrality con brandes
     // usa bfs si no hay pesos y dijkstra si hay pesos
     // k_origenes = -1 usa todos los nodos de origen 

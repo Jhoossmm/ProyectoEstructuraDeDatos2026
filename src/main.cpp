@@ -17,6 +17,9 @@ int main() {
     auto mapa_imdb = loader_imdb.get_mapa_nombres();
     grafo_imdb.imprimir_muestra_nodos(mapa_imdb);
 
+    // prueba de degree centrality top 5
+    Metricas::print_degree(grafo_imdb, mapa_imdb, 5);
+
     // betweenness centrality con 5000 nodos para aproximar  
     // Metricas::print_betweenness(grafo_imdb, mapa_imdb, 5, 5000);
 
@@ -55,7 +58,7 @@ int main() {
         // Metricas::print_average_shortest_path(grafo_imdb, 2000);
 
         // closeness centrality top 5 aproximado con 1000 nodos
-        Metricas::print_closeness(grafo_imdb, mapa_imdb, 5, 1000);
+        // Metricas::print_closeness(grafo_imdb, mapa_imdb, 5, 1000);
     }
     // -------------------------------------------------------------
 
@@ -69,6 +72,9 @@ int main() {
     loader_kraggle.cargar_csv("data/edges.csv", grafo_kraggle, ',', true, true, true);
     auto mapa_kraggle = loader_kraggle.get_mapa_nombres();
     grafo_kraggle.imprimir_muestra_nodos(mapa_kraggle);
+
+    // prueba de degree centrality top 5
+    Metricas::print_degree(grafo_kraggle, mapa_kraggle, 5);
     
     // betweenness centrality con 5000 nodos para aproximar
     // Metricas::print_betweenness(grafo_kraggle, mapa_kraggle, 5, 5000);
@@ -108,7 +114,7 @@ int main() {
         // Metricas::print_average_shortest_path(grafo_kraggle, 2000);
     
         // closeness centrality top 5 aproximado con 1000 nodos
-        Metricas::print_closeness(grafo_kraggle, mapa_kraggle, 5, 1000);
+        // Metricas::print_closeness(grafo_kraggle, mapa_kraggle, 5, 1000);
     }
     // -------------------------------------------------------------
     return 0;

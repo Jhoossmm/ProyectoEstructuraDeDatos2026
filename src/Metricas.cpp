@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <unordered_set>
 #include <vector>
 #include <limits>
 
@@ -20,6 +21,69 @@ bool valid_tiene_peso(const unordered_map<int, vector<Arista>>& ady) {
     }
     return false;
 }
+}
+
+unordered_map<int, double> Metricas::degree_centrality(const Grafo& grafo) {
+    const auto& ady = grafo.get_lista_adyacencia();
+    vector<int> nodos = grafo.get_nodos();
+
+    unordered_map<int, double> centralidad;
+    centralidad.reserve(nodos.size());
+
+    if (nodos.empty()) {
+        return centralidad;
+    }
+
+    unordered_map<int, unordered_set<int>> vecinos_incidentes;
+    vecinos_incidentes.reserve(nodos.size());
+    for (int id : nodos) {
+        vecinos_incidentes[id] = unordered_set<int>();
+    }
+
+    for (const auto& par : ady) {
+        int origen = par.first;
+        for (const Arista& arista : par.second) {
+            vecinos_incidentes[origen].insert(arista.destino);
+            vecinos_incidentes[arista.destino].insert(origen);
+        }
+    }
+
+    const double normalizador = nodos.size() > 1
+        ? static_cast<double>(nodos.size() - 1)
+        : 1.0;
+
+    for (int id : nodos) {
+        centralidad[id] = static_cast<double>(vecinos_incidentes[id].size()) / normalizador;
+    }
+
+    cout << "-> degree centrality lista para " << centralidad.size() << " nodos.\n";
+    return centralidad;
+}
+
+void Metricas::print_degree(const Grafo& grafo, const unordered_map<int, string>& id_a_nombre, int k) {
+    unordered_map<int, double> dc = degree_centrality(grafo);
+    vector<pair<int, double>> pares;
+    pares.reserve(dc.size());
+
+    for (const auto& par : dc) {
+        pares.push_back(par);
+    }
+
+    sort(pares.begin(), pares.end(), [](const pair<int, double>& a, const pair<int, double>& b) {
+        return a.second > b.second;
+    });
+
+    int limite = min(k, static_cast<int>(pares.size()));
+    cout << "-> top " << limite << " por degree centrality:\n";
+
+    for (int i = 0; i < limite; ++i) {
+        int id = pares[i].first;
+        double valor = pares[i].second;
+        unordered_map<int, string>::const_iterator it = id_a_nombre.find(id);
+        string nombre = (it != id_a_nombre.end()) ? it->second : "sin_nombre";
+
+        cout << "   " << (i + 1) << ". ID [" << id << "] (" << nombre << ") -> " << valor << "\n";
+    }
 }
 
 unordered_map<int, double> Metricas::betweenness_centrality(const Grafo& grafo, int k_origenes) {
