@@ -16,7 +16,15 @@ void Grafo::insertar_arista(int u, int v, double peso, bool es_dirigida) {
     if (lista_adyacencia.find(v) == lista_adyacencia.end()) {
         lista_adyacencia[v] = vector<Arista>();
     }
+
+    //Aumenta el grado de entrada al insertar la arista, en caso de no ser dirigido aumenta el grado de entrada de ambos nodos
+    grado_entrada[v]++; 
+    if (grado_entrada.find(u) == grado_entrada.end())
+        grado_entrada[u] = 0;
+    if (!es_dirigida)
+        grado_entrada[u]++;
 }
+
 
 //Funcion de prueba para mostrar algunos nodos y su grado de salida
 void Grafo::imprimir_muestra_nodos(unordered_map<int, string>& id_a_nombre) {
@@ -33,4 +41,25 @@ void Grafo::imprimir_muestra_nodos(unordered_map<int, string>& id_a_nombre) {
         contador++;
     }
     cout << "   (...)\n";
+}
+
+vector<int> Grafo::get_nodos() const {
+    vector<int> nodos;
+    nodos.reserve(lista_adyacencia.size());
+    for (auto const& par : lista_adyacencia) {
+        nodos.push_back(par.first);
+    }
+    return nodos;
+}
+
+int Grafo::get_grado_salida(int id) const {
+    return (int)lista_adyacencia.at(id).size();
+}
+
+int Grafo::get_grado_entrada(int id) const {
+    return grado_entrada.count(id) ? grado_entrada.at(id) : 0;
+}
+
+int Grafo::get_num_vertices() const {
+    return (int)lista_adyacencia.size();
 }

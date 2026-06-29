@@ -18,6 +18,8 @@ class Grafo {
 private:
     //Lista de adyacencia: ID Origen -> Vector Arista
     unordered_map<int, vector<Arista>> lista_adyacencia;
+    //Lista de grados de entrada: ID nodo -> Aristas Entrantes
+    unordered_map<int, int> grado_entrada;
     bool es_dirigido;
 
 public:
@@ -28,6 +30,11 @@ public:
     
     //Función de prueba
     void imprimir_muestra_nodos(unordered_map<int, string>& id_a_nombre);
+
+    int get_grado_salida(int id) const;
+    int get_grado_entrada(int id) const;
+    int get_num_vertices() const;
+    vector<int> get_nodos() const;
 };
 
 #endif
