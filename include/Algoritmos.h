@@ -8,6 +8,7 @@
 
 using namespace std;
 
+//Estructura para almacenar los resultados de la búsqueda de Brandes
 struct BrandesBusqueda {
     vector<vector<int>> pred;
     vector<double> sigma;
