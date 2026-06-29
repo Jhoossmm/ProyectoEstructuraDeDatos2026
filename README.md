@@ -17,11 +17,11 @@
 
 **Compilación y Ejecución:**
 
-  g++ src/main.cpp src/Grafo.cpp src/Loader.cpp -I include -o proyecto_redes -std=c++11
+  g++ src/main.cpp src/Grafo.cpp src/Loader.cpp src/Metricas.cpp src/Algoritmos.cpp -I include -o proyecto -std=c++14
+
+  En Linux/macOS: ./proyecto
   
-  En Linux/macOS: ./proyecto_redes
-  
-  En Windows: proyecto_redes.exe
+  En Windows: proyecto.exe o ./proyecto 
   
 ---
 
@@ -37,7 +37,7 @@ El TDA está diseñado de manera genérica, soportando grafos dirigidos, no diri
 - IMDb Actors Network: Red no dirigida y ponderada.
 - Kaggle Competition Graph: Grafo heterogéneo dirigido/no dirigido y ponderado.
 
-## Checklist de Métricas implementadas //poner descripción
+## Checklist de Métricas implementadas
 
 - [ ] Degree Centrality:
 
