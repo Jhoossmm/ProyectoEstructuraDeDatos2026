@@ -5,6 +5,7 @@
 #include <limits>
 #include <queue>
 
+// Implementación de los algoritmos de Brandes para cálculo de caminos mínimos
 BrandesBusqueda Algoritmos::brandes_bfs(
     const unordered_map<int, vector<Arista>>& ady,
     const vector<int>& nodos,
