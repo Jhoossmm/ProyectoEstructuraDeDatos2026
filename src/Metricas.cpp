@@ -39,7 +39,8 @@ unordered_map<int, double> Metricas::degree_centrality(const Grafo& grafo) {
     for (int id : nodos) {
         vecinos_incidentes[id] = unordered_set<int>();
     }
-
+    
+    // recorre cada nodo y sus aristas para contar los vecinos incidentes
     for (const auto& par : ady) {
         int origen = par.first;
         for (const Arista& arista : par.second) {
@@ -51,7 +52,7 @@ unordered_map<int, double> Metricas::degree_centrality(const Grafo& grafo) {
     const double normalizador = nodos.size() > 1
         ? static_cast<double>(nodos.size() - 1)
         : 1.0;
-
+    // calcula la centralidad de cada nodo como el número de vecinos incidentes dividido por el normalizador
     for (int id : nodos) {
         centralidad[id] = static_cast<double>(vecinos_incidentes[id].size()) / normalizador;
     }
